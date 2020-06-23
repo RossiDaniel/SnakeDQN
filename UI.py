@@ -22,8 +22,8 @@ class snakeuUI:
         self.clock = pygame.time.Clock()
 
         #FONT
-        self.font_style = pygame.font.SysFont("bahnschrift",25)
-        self.score_style = pygame.font.SysFont("comicsans",35)
+        self.font_style = pygame.font.SysFont("bahnschrift",10)
+        self.score_style = pygame.font.SysFont("comicsans",10)
 
     def score(self,score):
         value = self.score_style.render("Your Score:" + str(score),True,ut.colors['yellow'])
