@@ -22,8 +22,8 @@ class snakeuUI:
         self.clock = pygame.time.Clock()
 
         #FONT
-        self.font_style = pygame.font.SysFont("bahnschrift",10)
-        self.score_style = pygame.font.SysFont("comicsans",10)
+        self.font_style = pygame.font.SysFont("bahnschrift",20)
+        self.score_style = pygame.font.SysFont("comicsans",20)
 
     def score(self,score):
         value = self.score_style.render("Your Score:" + str(score),True,ut.colors['yellow'])
@@ -44,8 +44,8 @@ class snakeuUI:
         self.message("GAME OVER",'red')
         pygame.display.update()
         time.sleep(0.5)
-        pygame.quit()
-        quit()
+        #pygame.quit()
+        #quit()
 
     def draw(self,color,xy):
         pygame.draw.rect(self.dis,ut.colors[color],[xy[0]*self.snake_block,xy[1]*self.snake_block,self.snake_block,self.snake_block])

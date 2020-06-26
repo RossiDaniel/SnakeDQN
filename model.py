@@ -7,7 +7,7 @@ import random
 np.random.seed(42)
 
 class DQM():
-    def __init__(self,width,height,size_buffer=2000,update_term=5,batch_size = 1000, discount=1):
+    def __init__(self,width,height,size_buffer=1000000,update_term=2,batch_size = 250000, discount=0.5,equalize_term=2):
         self.width = width
         self.height = height
 
@@ -24,12 +24,16 @@ class DQM():
         self.discout = discount
         self.model_path = "snake_experience.h5"
 
+        self.equalize_counter = 0
+        self.equalize_term = equalize_term
+
     def create_graph(self):
         model = keras.models.Sequential([
-            keras.layers.Conv2D(filters=32, kernel_size=[3,3], padding="same", activation="sigmoid",input_shape=[self.width,self.height,1]),
-            keras.layers.Dropout(0.2),
+            keras.layers.InputLayer(input_shape=[self.width,self.height,1]),
+            keras.layers.Conv2D(filters=16, kernel_size=8,input_shape=[self.width,self.height,1],activation="tanh"),
+            keras.layers.MaxPooling2D(pool_size=(2,2)),
             keras.layers.Flatten(),
-            keras.layers.Dense(4, activation="sigmoid")
+            keras.layers.Dense(4,activation="linear")
         ])
         model.compile(loss="mse", optimizer="adam", metrics=['accuracy'])
         return model
@@ -38,10 +42,8 @@ class DQM():
         self.buffer.append(transition)
 
     def train(self):
-        if(len(self.buffer) < self.size_buffer):
-            return
-            
-        batch = random.sample(self.buffer, self.batch_size)
+        if(len(self.buffer)<self.batch_size):return 
+        batch = random.sample(self.buffer, min(len(self.buffer),self.batch_size))
 
         X_states = tf.convert_to_tensor(np.array([t[0] for t in batch]), np.float32)
         X_next_states = tf.convert_to_tensor(np.array([t[3] for t in batch]), np.float32)
@@ -58,8 +60,12 @@ class DQM():
         
         Y_q_values = tf.convert_to_tensor(Y_current_q_values, np.float32)
 
-        self.train_model.fit(X_states, Y_q_values, epoch=2, batch_size=self.batch_size/10, verbose=0)
+        self.train_model.fit(x=X_states, y=Y_q_values, batch_size=min(len(self.buffer),self.batch_size),epochs=1, verbose=1)
         self.train_model.save_weights(self.model_path)
+        self.equalize_counter += 1
+        if self.equalize_counter == self.equalize_term:
+            self.equalize_counter = 0
+            self.equalize_model()
      
     def predict_q_values(self, state):
         X = np.zeros((1,self.width,self.height,1))

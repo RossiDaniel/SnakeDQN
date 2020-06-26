@@ -2,7 +2,11 @@ import controller as c
 import utility as ut
 import sys
 import numpy
+import model
+
 numpy.set_printoptions(threshold=sys.maxsize)
 
 con = c.controller()
-con.trainIA()
+con.play_with_UI()
+
+
