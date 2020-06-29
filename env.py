@@ -9,18 +9,7 @@ class SnakeEnv:
 
         #informazioni relative la singola partita
         #informazione sul serpente
-        self.field = np.zeros((self.width,self.height,1))
-        self.snake_head = (int(self.width/2),int(self.height/2))
-        self.snake_body = [self.snake_head]
-        self.distance=int(self.width/2)
-
-        #informazioni sul frutto
-        self.gen_fruit()
-        #punteggio
-        self.score = 0
-        self.total_reward = 0
-        self.update_field()
-        self.transitions = []
+        self.reset()
 
         self.update_field()
     
@@ -79,7 +68,6 @@ class SnakeEnv:
         return transition
 
     def random_start(self):
-        self.field = np.zeros((self.width,self.height,1))
         [sx,sy] = ut.random_distribution(self.width,self.height,[])
         self.snake_head = (int(sx),int(sy))
         self.snake_body = [self.snake_head]
@@ -92,7 +80,6 @@ class SnakeEnv:
 
 
     def reset(self):
-        self.field = np.zeros((self.width,self.height,1))
         self.snake_head = (int(self.width/2),int(self.height/2))
         self.snake_body = [self.snake_head]
         self.gen_fruit()
@@ -107,8 +94,9 @@ class SnakeEnv:
         self.fruit = (x,y)
 
     def update_field(self):
-        self.field = np.zeros((self.width,self.height,1))
+        self.field = np.ones((self.width,self.height,1))
         if not self.stop_game():
+            self.field = np.zeros((self.width,self.height,1))
             for x,y in self.snake_body:
                 self.field[y][x][0] = 10
             self.field[self.snake_head[1],self.snake_head[0],0] = 20

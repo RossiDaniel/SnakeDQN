@@ -81,7 +81,6 @@ class controller:
         random_action = [i for i, j in enumerate(rewards) if j == rewards[action]]
         action = (random.sample(random_action,k=1))[0]
         
-        """
         if rewards[action] == -1:
             
             degrees = ut.angle_between((0,0),(self.env.fruit[0]-self.env.snake_head[0],self.env.fruit[1]-self.env.snake_head[1]))
@@ -93,16 +92,17 @@ class controller:
 
             if rewards[vector_choice] != -100:
                 action = vector_choice
-        """
+        
         if len(self.model.buffer) >= self.model.size_buffer:
             q_values = self.model.predict_q_values(self.env.field)
             q_action = np.max(q_values[0])
             random_action = [i for i, j in enumerate(q_values[0]) if j == q_action]
             qaction = (random.sample(random_action,k=1))[0]
-
+            return qaction
+            """
             if(rewards[qaction] < rewards[action]):
                 qaction = action
 
             return qaction
-        
+            """
         return action

@@ -7,7 +7,7 @@ import random
 np.random.seed(42)
 
 class DQM():
-    def __init__(self,width,height,size_buffer=1000000,update_term=2,batch_size = 250000, discount=0.5,equalize_term=2):
+    def __init__(self,width,height,size_buffer=100000,update_term=2,batch_size = 25000, discount=0.5,equalize_term=2):
         self.width = width
         self.height = height
 
@@ -32,9 +32,12 @@ class DQM():
             keras.layers.InputLayer(input_shape=[self.width,self.height,1]),
             keras.layers.Conv2D(filters=16, kernel_size=8,input_shape=[self.width,self.height,1],activation="tanh"),
             keras.layers.MaxPooling2D(pool_size=(2,2)),
+            keras.layers.Conv2D(filters=8, kernel_size=3,input_shape=[self.width/2,self.height/2,1],activation="tanh"),
+
             keras.layers.Flatten(),
             keras.layers.Dense(4,activation="linear")
         ])
+        model.summary()
         model.compile(loss="mse", optimizer="adam", metrics=['accuracy'])
         return model
   
