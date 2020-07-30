@@ -22,7 +22,7 @@ class DQM():
         self.update_term = update_term
         self.batch_size = batch_size
         self.discout = discount
-        self.model_path = "snake_experience.h5"
+        self.model_path = "new_model.h5"
 
         self.equalize_counter = 0
         self.equalize_term = equalize_term
@@ -30,15 +30,14 @@ class DQM():
     def create_graph(self):
         model = keras.models.Sequential([
             keras.layers.InputLayer(input_shape=[self.width,self.height,1]),
-            keras.layers.Conv2D(filters=16, kernel_size=8,input_shape=[self.width,self.height,1],activation="tanh"),
-            keras.layers.MaxPooling2D(pool_size=(2,2)),
-            keras.layers.Conv2D(filters=8, kernel_size=3,input_shape=[self.width/2,self.height/2,1],activation="tanh"),
-
+            keras.layers.Conv2D(16,(3,3),activation="tanh"),
             keras.layers.Flatten(),
+            keras.layers.Dense(128,activation="tanh"),
+            keras.layers.Dense(64,activation="tanh"),
+            keras.layers.Dense(32,activation="tanh"),
             keras.layers.Dense(4,activation="linear")
         ])
-        model.summary()
-        model.compile(loss="mse", optimizer="adam", metrics=['accuracy'])
+        model.compile(loss="mse", optimizer="adam", metrics=['mean_absolute_percentage_error'])
         return model
   
     def add_train_data(self, transition):
@@ -71,10 +70,9 @@ class DQM():
             self.equalize_model()
      
     def predict_q_values(self, state):
-        X = np.zeros((1,self.width,self.height,1))
-        X[0] = state
+        X = np.array([state])
         X_tf = tf.convert_to_tensor(X, np.float32)
-        return self.train_model.predict(X_tf)
+        return self.train_model.predict(X)
 
     def equalize_model(self):
         self.predict_model.set_weights(self.train_model.get_weights())

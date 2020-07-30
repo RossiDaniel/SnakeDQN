@@ -10,8 +10,8 @@ import utility as ut
 
 class controller:
     def __init__(self):
-        self.width = 20
-        self.height = 20
+        self.width = 4
+        self.height = 4
         self.block = int(800/self.width)
         self.env = env.SnakeEnv(self.width,self.height)
         self.model = model.DQM(self.width,self.height)
@@ -36,7 +36,7 @@ class controller:
             self.env.random_start()
             self.model.load_trained_model()
             while self.env.stop_game() == False:
-
+                print(self.env.field.shape)
                 q_values = self.model.predict_q_values(self.env.field)
                 print(q_values)
                 action = np.argmax(q_values[0])

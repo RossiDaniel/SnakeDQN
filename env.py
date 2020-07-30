@@ -96,7 +96,7 @@ class SnakeEnv:
     def update_field(self):
         self.field = np.ones((self.width,self.height,1))
         if not self.stop_game():
-            self.field = np.zeros((self.width,self.height,1))
+            self.field = np.ones((self.width,self.height,1))
             for x,y in self.snake_body:
                 self.field[y][x][0] = 10
             self.field[self.snake_head[1],self.snake_head[0],0] = 20
