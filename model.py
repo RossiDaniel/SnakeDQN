@@ -22,7 +22,7 @@ class DQM():
         self.update_term = update_term
         self.batch_size = batch_size
         self.discout = discount
-        self.model_path = "new_model.h5"
+        self.model_path = "modelli/4/new_new_model44_512.h5"
 
         self.equalize_counter = 0
         self.equalize_term = equalize_term
@@ -30,8 +30,9 @@ class DQM():
     def create_graph(self):
         model = keras.models.Sequential([
             keras.layers.InputLayer(input_shape=[self.width,self.height,1]),
-            keras.layers.Conv2D(16,(3,3),activation="tanh"),
             keras.layers.Flatten(),
+            keras.layers.Dense(512,activation="tanh"),
+            keras.layers.Dense(256,activation="tanh"),
             keras.layers.Dense(128,activation="tanh"),
             keras.layers.Dense(64,activation="tanh"),
             keras.layers.Dense(32,activation="tanh"),
